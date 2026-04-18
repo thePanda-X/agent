@@ -5,7 +5,7 @@ import path from "path";
 import os from "os";
 import pathLib from "path";
 
-const MODEL = "inception/mercury-2";
+const MODEL = "gemma4:26b";
 const cwd = process.cwd();
 
 class provider {
@@ -21,14 +21,14 @@ class provider {
     }
 }
 
-const useOpenRouter = true;
+const useOpenRouter = false;
 
 
 class colors {
     static user = chalk.hex("#00ff00").bold;
     static response = chalk.hex("#f5f5f5").bold;
     static thinking = chalk.hex("#6d6d6d").bold;
-    static tool = chalk.hex("#ff0055").bold;
+    static tool = chalk.hex("#ff7b00").bold;
 }
 
 type Message = OpenAI.Chat.Completions.ChatCompletionMessageParam;
