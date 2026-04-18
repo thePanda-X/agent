@@ -5,8 +5,24 @@ import path from "path";
 import os from "os";
 import pathLib from "path";
 
-const MODEL = "gemma4:26b";
+const MODEL = "inception/mercury-2";
 const cwd = process.cwd();
+
+class provider {
+    baseURL: string;
+    apiKey: string;
+
+    constructor({ baseURL, apiKey }: { baseURL: string; apiKey: string }) {
+        if (!baseURL || !apiKey) {
+            throw new Error("Both baseURL and apiKey are required to initialize the provider.");
+        }
+        this.baseURL = baseURL;
+        this.apiKey = apiKey;
+    }
+}
+
+const useOpenRouter = true;
+
 
 class colors {
     static user = chalk.hex("#00ff00").bold;
@@ -235,9 +251,21 @@ ${tools.map((tool: any) => `- ${tool.function.name}: ${tool.function.description
 
 
 async function main() {
-    const openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY || "ollama",
+    const ollamaProvider = new provider({
+        apiKey: "ollama",
         baseURL: "http://localhost:11434/v1",
+    });
+
+    const openaiProvider = new provider({
+        apiKey: process.env.OPENROUTER_API_KEY || "",
+        baseURL: "https://openrouter.ai/api/v1",
+    });
+
+    const activeProvider = useOpenRouter ? openaiProvider : ollamaProvider;
+
+    const openai = new OpenAI({
+        apiKey: activeProvider.apiKey,
+        baseURL: activeProvider.baseURL,
     });
 
     let messages: Message[] = [
@@ -246,7 +274,7 @@ async function main() {
 
     const spinner = new Spinner();
     while (true) {
-        const userInput = prompt(colors.user(" ➔ ")) || "";
+        const userInput = prompt(colors.user("\n ➔ ")) || "";
         if (userInput.toLowerCase() === "/exit") {
             console.log(colors.response("Goodbye!"));
             break;
