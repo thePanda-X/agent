@@ -5,6 +5,7 @@ import path from "path";
 import os from "os";
 import pathLib from "path";
 
+const useOpenRouter = false;
 const MODEL = "gemma4:26b";
 const cwd = process.cwd();
 
@@ -20,9 +21,6 @@ class provider {
         this.apiKey = apiKey;
     }
 }
-
-const useOpenRouter = false;
-
 
 class colors {
     static user = chalk.hex("#00ff00").bold;
